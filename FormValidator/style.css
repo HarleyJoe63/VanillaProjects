@@ -1,0 +1,126 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
+
+:root {
+  --primary-color: #007bff;
+  --secondary-color: #6c757d;
+  --focus-color: blue;
+  --success-color: green;
+  --error-color: red;
+  --info-color: #17a2b8;
+  --warning-color: yellow;
+  --danger-color: orange;
+  --light-color: #f8f9fa;
+  --dark-color: #343a40;
+  --breakpoint-sm: 576px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 992px;
+  --breakpoint-xl: 1200px;
+}
+
+/* Path: FormValidator/style.css */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: whitesmoke;
+  font-family: 'Open Sans', sans-serif;
+  /* font-weight: 300; */
+  /* font-size: 16px; */
+  /* line-height: 1.6; */
+  /* color: #7f8c8d; */
+  /* padding: 30px; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  margin: 0;
+}
+
+.container {
+  max-width: 500px;
+  width: 100%;
+  background-color: white;
+  /* padding: 50px 10px; */
+  border-radius: 5px;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+}
+
+.form {
+  padding: 30px 40px;
+}
+
+h2 {
+  margin: 0 0 30px 0;
+  font-weight: 700;
+  color: #7f8c8d;
+  text-align: center;
+}
+
+.form-control {
+  margin-bottom: 10px;
+  padding-bottom: 20px;
+  position: relative;
+}
+
+.fieldname {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 700;
+  color: #7f8c8d;
+}
+
+.fielddata {
+  display: block;
+  width: 100%;
+  height: 40px;
+  padding: 5px 5px;
+  font-size: 16px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.fielddata:focus {
+  outline: none;
+  border-color: var(--focus-color);
+  box-shadow: 0 0 5px var(--focus-color);
+}
+
+.error {
+  border-color: var(--error-color);
+  border-width: 2px;
+  color: var(--error-color);
+}
+
+.success {
+  border-color: var(--success-color);
+  border-width: 2px;
+  color: var(--success-color);
+}
+
+.errmsg {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  font-size: 14px;
+  color: var(--error-color);
+  display: none;
+}
+
+.errmsg.show {
+  display: block;
+}
+
+.submit {
+  display: block;
+  width: 100%;
+  height: 40px;
+  margin-top: 20px;
+  font-size: 16px;
+  font-weight: 700;
+  color: white;
+  background-color: var(--primary-color);
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
