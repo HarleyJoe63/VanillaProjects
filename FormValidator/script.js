@@ -22,23 +22,32 @@ function listReqiuredFields(formName) {
 
 function checkRequired(inputArr) {
   inputArr.forEach((input) => {
-    //if (!input.classList.contains('error')) {
+    const minLen = input.dataset.minlen;
+    const maxLen = input.dataset.maxlen;
+
     if (input.value.trim() === '') {
       showError(input, `${getFieldName(input)} is required`);
     } else {
-      showSuccess(input);
+      if (minLen !== undefined && input.value.length < minLen) {
+        showError(input, `${getFieldName(input)} must be at least ${minLen} characters`);
+      } else if (maxLen !== undefined && input.value.length > maxLen) {
+        showError(input, `${getFieldName(input)} must be less than ${maxLen} characters`);
+      } else {
+        showSuccess(input);
+      }
     }
-    //}
   });
 }
 
 function checkInputLength(input) {
-  const minLength = input.getAttribute('minlength');
-  console.log(minLength);
+  const minLen = input.dataset.minlen;
+  const maxLen = input.dataset.maxlen;
 
   // if (!input.classList.contains('error')) {
-  if (input.value.length < 6) {
-    showError(input, `${getFieldName(input)} must be at least 6 characters`);
+  if (input.value.length < minLen) {
+    showError(input, `${getFieldName(input)} must be at least ${minLen} characters`);
+  } else if (input.value.length > maxLen) {
+    showError(input, `${getFieldName(input)} must be less than${maxLen} characters`);
   } else {
     showSuccess(input);
   }
@@ -54,10 +63,24 @@ function checkEmail(input) {
     }
   }
 }
+
+function checkPasswordsMatch(input1, input2) {
+  if (input1.value !== input2.value) {
+    showError(input2, `${getFieldName(input2)} must match ${getFieldName(input1)}`);
+  } else {
+    showSuccess(input2);
+  }
+}
+
 // Get fieldname
 function getFieldName(input) {
   const label = input.parentElement.querySelector('label');
-  return label.innerText; // input.id.charAt(0).toUpperCase() + input.id.slice(1);
+
+  const fieldName = label.dataset.name;
+
+  //let result = (fieldName === undefined) ? label.innerText : fieldName;
+
+  return fieldName === undefined ? label.innerText : fieldName; //; // input.id.charAt(0).toUpperCase() + input.id.slice(1);
 }
 
 function validateEmail(email) {
@@ -67,6 +90,16 @@ function validateEmail(email) {
   return re.test(email);
 }
 
+function clearErrors(inputArr) {
+  inputArr.forEach((input) => {
+    input.classList.remove('error');
+    input.classList.remove('success');
+    const small = input.parentElement.querySelector('small');
+    small.classList.remove('show');
+    small.innerText = '#';
+  });
+}
+
 // Show input error message
 function showError(input, message) {
   //const formControl = input; //.parentElement;
@@ -74,7 +107,8 @@ function showError(input, message) {
   input.classList.add('error');
   const small = input.parentElement.querySelector('small');
   small.classList.add('show');
-  small.innerText = message;
+  if (small.innerText === '#') small.innerText = message;
+  //small.innerText = message;
 }
 
 // Show success outline
@@ -84,6 +118,7 @@ function showSuccess(input) {
   input.classList.add('success');
   const small = input.parentElement.querySelector('small');
   small.classList.remove('show');
+  small.innerText = '#';
 }
 
 // Example usage:
@@ -106,36 +141,11 @@ form.addEventListener('submit', function (event) {
   // console.log(passwordInput.value);
   // console.log(confirmPasswordInput.value);
 
-  checkRequired(listReqiuredFields('register'));
+  const checkFields = listReqiuredFields('register');
+
+  clearErrors(checkFields);
+  checkRequired(checkFields);
   checkInputLength(passwordInput);
   checkEmail(emailInput);
-
-  // Perform form validation here
-  // if (usernameInput.value === '') {
-  //   showError(usernameInput, 'Username cannot be blank');
-  // } else {
-  //   showSuccess(usernameInput);
-  // }
-
-  // if (emailInput.value === '') {
-  //   showError(emailInput, 'Email cannot be blank');
-  // } else if (!validateEmail(emailInput.value)) {
-  //   showError(emailInput, 'Email is not valid');
-  // } else {
-  //   showSuccess(emailInput);
-  // }
-
-  // if (passwordInput.value === '') {
-  //   showError(passwordInput, 'Password cannot be blank');
-  // } else {
-  //   showSuccess(passwordInput);
-  // }
-
-  // if (confirmPasswordInput.value === '') {
-  //   showError(confirmPasswordInput, 'Confirm password cannot be blank');
-  // } else if (passwordInput.value !== confirmPasswordInput.value) {
-  //   showError(confirmPasswordInput, 'Passwords do not match');
-  // } else {
-  //   showSuccess(confirmPasswordInput);
-  // }
+  checkPasswordsMatch(passwordInput, confirmPasswordInput);
 });

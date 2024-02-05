@@ -12,31 +12,25 @@
       <form action="#" id="register" class="form">
         <h2>Register With Us</h2>
         <div class="form-control">
-          <label for="username" class="fieldname">Username</label>
-          <input type="text" id="username" placeholder="Enter username" class="fielddata required" />
-          <small class="errmsg">Error message</small>
+          <label for="username" class="fieldname" data-name="User Name">Username</label>
+          <input type="text" id="username" placeholder="Enter username" class="fielddata required" data-minlen="3" data-maxlen="12" />
+          <small class="errmsg">#</small>
         </div>
         <div class="form-control">
-          <label for="email" class="fieldname">Email</label>
+          <label for="email" class="fieldname" data-name="Email Address">Email</label>
           <input type="text" id="email" placeholder="Enter email" class="fielddata required" ma />
-          <small class="errmsg">Error message</small>
+          <small class="errmsg">#</small>
         </div>
         <div class="form-control">
-          <label for="password" class="fieldname">Password</label>
-          <input
-            type="password"
-            id="password"
-            placeholder="Enter password"
-            class="fielddata required"
-            minlength="6"
-            maxlength="20"
-          />
-          <small class="errmsg">Error message</small>
+          <!-- data-valid uses 1 character per requirement (min 1 char of each): A=uppercase, a=lowercase, 1=digit, @=special -->
+          <label for="password" class="fieldname" data-valid="Aa1@">Password</label>
+          <input type="password" id="password" placeholder="Enter password" class="fielddata required" data-minlen="7" data-maxlen="21" />
+          <small class="errmsg">#</small>
         </div>
         <div class="form-control">
           <label for="confirmPassword" class="fieldname">Confirm Password</label>
           <input type="password" id="confirmPassword" placeholder="Enter password again" class="fielddata required" />
-          <small class="errmsg">Error message</small>
+          <small class="errmsg">#</small>
         </div>
         <button type="submit" class="submit">Submit</button>
       </form>
