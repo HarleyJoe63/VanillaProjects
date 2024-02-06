@@ -22,9 +22,17 @@
           <small class="errmsg">#</small>
         </div>
         <div class="form-control">
-          <!-- data-valid uses 1 character per requirement (min 1 char of each): A=uppercase, a=lowercase, 1=digit, @=special -->
-          <label for="password" class="fieldname" data-valid="Aa1@">Password</label>
-          <input type="password" id="password" placeholder="Enter password" class="fielddata required" data-minlen="7" data-maxlen="21" />
+          <!-- data-valid uses 1 character per requirement (min 1 char of each): A=uppercase, a=lowercase, 0=digit, $=special -->
+          <label for="password" class="fieldname">Password</label>
+          <input
+            type="password"
+            id="password"
+            placeholder="Enter password"
+            class="fielddata required"
+            data-minlen="7"
+            data-maxlen="21"
+            data-valid="Aa1@"
+          />
           <small class="errmsg">#</small>
         </div>
         <div class="form-control">

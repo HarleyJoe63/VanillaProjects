@@ -4,6 +4,12 @@ const emailInput = document.getElementById('email');
 const passwordInput = document.getElementById('password');
 const confirmPasswordInput = document.getElementById('confirmPassword');
 
+var message = {
+  inputField: '',
+  priority: 0,
+  message: '',
+};
+
 // Example usage:
 console.log(usernameInput.value);
 console.log(emailInput.value);
@@ -11,12 +17,7 @@ console.log(passwordInput.value);
 console.log(confirmPasswordInput.value);
 
 function listReqiuredFields(formName) {
-  //console.log(formName);
   const requiredFields = document.forms[formName].querySelectorAll('.required');
-  // requiredFields.forEach((field) => {
-  //   console.log(field.id);
-  // });
-
   return requiredFields;
 }
 
@@ -51,7 +52,6 @@ function checkInputLength(input) {
   } else {
     showSuccess(input);
   }
-  // }
 }
 
 function checkEmail(input) {
@@ -72,19 +72,37 @@ function checkPasswordsMatch(input1, input2) {
   }
 }
 
+function checkPasswordRequirements(input) {
+  const minValid = input.dataset.valid;
+
+  if (minValid !== undefined) {
+    var reMsg = '';
+
+    minValid.split('').forEach((item) => {
+      if (item === 'A') {
+        if (input.value.match(/[A-Z]/) === null) reMsg = `${getFieldName(input)} must contain at least one uppercase letter`;
+      } else if (item === 'a') {
+        if (input.value.match(/[a-z]/) === null) reMsg = `${getFieldName(input)} must contain at least one lowercase letter`;
+      } else if (item === '0') {
+        if (input.value.match(/[0-9]/) === null) reMsg = `${getFieldName(input)} must contain at least one number`;
+      } else if (item === '$') {
+        if (input.value.match(/[^A-Za-z0-9]/) === null) reMsg = `${getFieldName(input)} must contain at least one special character`;
+      }
+    });
+
+    if (reMsg !== '') showError(input, reMsg);
+    else showSuccess(input);
+  }
+}
+
 // Get fieldname
 function getFieldName(input) {
   const label = input.parentElement.querySelector('label');
-
   const fieldName = label.dataset.name;
-
-  //let result = (fieldName === undefined) ? label.innerText : fieldName;
-
   return fieldName === undefined ? label.innerText : fieldName; //; // input.id.charAt(0).toUpperCase() + input.id.slice(1);
 }
 
 function validateEmail(email) {
-  //const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const re =
     /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   return re.test(email);
@@ -102,18 +120,15 @@ function clearErrors(inputArr) {
 
 // Show input error message
 function showError(input, message) {
-  //const formControl = input; //.parentElement;
   input.classList.remove('success');
   input.classList.add('error');
   const small = input.parentElement.querySelector('small');
   small.classList.add('show');
   if (small.innerText === '#') small.innerText = message;
-  //small.innerText = message;
 }
 
 // Show success outline
 function showSuccess(input) {
-  //const formControl = input; //.parentElement;
   input.classList.remove('error');
   input.classList.add('success');
   const small = input.parentElement.querySelector('small');
@@ -147,5 +162,6 @@ form.addEventListener('submit', function (event) {
   checkRequired(checkFields);
   checkInputLength(passwordInput);
   checkEmail(emailInput);
+  checkPasswordRequirements(passwordInput);
   checkPasswordsMatch(passwordInput, confirmPasswordInput);
 });
