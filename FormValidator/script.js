@@ -4,17 +4,55 @@ const emailInput = document.getElementById('email');
 const passwordInput = document.getElementById('password');
 const confirmPasswordInput = document.getElementById('confirmPassword');
 
-var message = {
-  inputField: '',
-  priority: 0,
-  message: '',
+const trueTypeOf = (value) => {
+  const type = typeof value;
+
+  if (type === 'number') {
+    if (Number.isInteger(value)) return 'integer';
+    return 'float';
+  }
+  if (type === 'function') {
+    if (/^\s*class\s+/.test(value.toString())) return 'class';
+    return 'function';
+  }
+  if (type !== 'object') return type;
+  if (value === null) return 'null';
+  if (Array.isArray(value)) return 'array';
+  if (value.constructor.name === 'Object') return 'dictionary';
+  return Object.prototype.toString.call(value).slice(8, -1).toLowerCase();
 };
 
-// Example usage:
-console.log(usernameInput.value);
-console.log(emailInput.value);
-console.log(passwordInput.value);
-console.log(confirmPasswordInput.value);
+// Message constructor function
+class Message {
+  inputField;
+  message;
+  order;
+
+  constructor(inputField, message, order) {
+    this.inputField = inputField;
+    this.message = message;
+    this.order = order;
+  }
+}
+
+class MessageList {
+  constructor() {
+    this.messages = [];
+  }
+
+  #index = 1;
+
+  addMessage(message) {
+    message.order = this.#index++;
+    this.messages.push(message);
+  }
+
+  getMessages() {
+    return this.messages;
+  }
+}
+
+var messages = new MessageList();
 
 function listReqiuredFields(formName) {
   const requiredFields = document.forms[formName].querySelectorAll('.required');
@@ -27,12 +65,15 @@ function checkRequired(inputArr) {
     const maxLen = input.dataset.maxlen;
 
     if (input.value.trim() === '') {
-      showError(input, `${getFieldName(input)} is required`);
+      //showError(input, `${getFieldName(input)} is required`);
+      addValidationMessage(input, `${getFieldName(input)} is required`);
     } else {
       if (minLen !== undefined && input.value.length < minLen) {
-        showError(input, `${getFieldName(input)} must be at least ${minLen} characters`);
+        //showError(input, `${getFieldName(input)} must be at least ${minLen} characters`);
+        addValidationMessage(input, `${getFieldName(input)} must be at least ${minLen} characters`);
       } else if (maxLen !== undefined && input.value.length > maxLen) {
-        showError(input, `${getFieldName(input)} must be less than ${maxLen} characters`);
+        //showError(input, `${getFieldName(input)} must be less than ${maxLen} characters`);
+        addValidationMessage(input, `${getFieldName(input)} must be less than ${maxLen} characters`);
       } else {
         showSuccess(input);
       }
@@ -46,9 +87,11 @@ function checkInputLength(input) {
 
   // if (!input.classList.contains('error')) {
   if (input.value.length < minLen) {
-    showError(input, `${getFieldName(input)} must be at least ${minLen} characters`);
+    //showError(input, `${getFieldName(input)} must be at least ${minLen} characters`);
+    addValidationMessage(input, `${getFieldName(input)} must be at least ${minLen} characters`);
   } else if (input.value.length > maxLen) {
-    showError(input, `${getFieldName(input)} must be less than${maxLen} characters`);
+    //showError(input, `${getFieldName(input)} must be less than${maxLen} characters`);
+    addValidationMessage(input, `${getFieldName(input)} must be less than${maxLen} characters`);
   } else {
     showSuccess(input);
   }
@@ -57,7 +100,8 @@ function checkInputLength(input) {
 function checkEmail(input) {
   if (!input.classList.contains('error')) {
     if (!validateEmail(input.value)) {
-      showError(input, `${getFieldName(input)} is not valid`);
+      //showError(input, `${getFieldName(input)} is not valid`);
+      addValidationMessage(input, `${getFieldName(input)} is not valid`);
     } else {
       showSuccess(input);
     }
@@ -66,7 +110,8 @@ function checkEmail(input) {
 
 function checkPasswordsMatch(input1, input2) {
   if (input1.value !== input2.value) {
-    showError(input2, `${getFieldName(input2)} must match ${getFieldName(input1)}`);
+    //showError(input2, `${getFieldName(input2)} must match ${getFieldName(input1)}`);
+    addValidationMessage(input2, `${getFieldName(input2)} must match ${getFieldName(input1)}`);
   } else {
     showSuccess(input2);
   }
@@ -76,23 +121,43 @@ function checkPasswordRequirements(input) {
   const minValid = input.dataset.valid;
 
   if (minValid !== undefined) {
-    var reMsg = '';
+    var msg = '';
 
     minValid.split('').forEach((item) => {
       if (item === 'A') {
-        if (input.value.match(/[A-Z]/) === null) reMsg = `${getFieldName(input)} must contain at least one uppercase letter`;
-      } else if (item === 'a') {
-        if (input.value.match(/[a-z]/) === null) reMsg = `${getFieldName(input)} must contain at least one lowercase letter`;
-      } else if (item === '0') {
-        if (input.value.match(/[0-9]/) === null) reMsg = `${getFieldName(input)} must contain at least one number`;
-      } else if (item === '$') {
-        if (input.value.match(/[^A-Za-z0-9]/) === null) reMsg = `${getFieldName(input)} must contain at least one special character`;
+        if (input.value.match(/[A-Z]/) === null) {
+          msg = `${getFieldName(input)} must contain at least one uppercase letter`;
+          addValidationMessage(input, msg);
+        }
+      }
+
+      if (item === 'a') {
+        if (input.value.match(/[a-z]/) === null) {
+          msg = `${getFieldName(input)} must contain at least one lowercase letter`;
+          addValidationMessage(input, msg);
+        }
+      }
+
+      if (item === '0') {
+        if (input.value.match(/[0-9]/) === null) {
+          msg = `${getFieldName(input)} must contain at least one number`;
+          addValidationMessage(input, msg);
+        }
+      }
+
+      if (item === '$') {
+        if (input.value.match(/[^A-Za-z0-9]/) === null) {
+          msg = `${getFieldName(input)} must contain at least one special character`;
+          addValidationMessage(input, msg);
+        }
       }
     });
-
-    if (reMsg !== '') showError(input, reMsg);
-    else showSuccess(input);
   }
+}
+
+function addValidationMessage(input, message) {
+  const msg = new Message(getFieldName(input), message);
+  messages.addMessage(msg);
 }
 
 // Get fieldname
@@ -136,25 +201,32 @@ function showSuccess(input) {
   small.innerText = '#';
 }
 
-// Example usage:
-const email = 'test@example.com';
-if (validateEmail(email)) {
-  console.log('Email is valid');
-} else {
-  console.log('Email is invalid');
-}
+function showValidationMessages(fields) {
+  const msgList = messages.getMessages();
 
-listReqiuredFields('register');
+  fields.forEach((input) => {
+    const fieldName = getFieldName(input);
+    const topMessage = Array.from(
+      messages
+        .getMessages()
+        .filter((i) => i.inputField === fieldName)
+        .sort((a, b) => a.order - b.order)
+    )[0];
+
+    if (topMessage !== undefined) {
+      showError(input, topMessage.message);
+    } else {
+      showSuccess(input);
+    }
+  });
+}
 
 // Add submit event listener to the form
 const form = document.getElementById('register');
 form.addEventListener('submit', function (event) {
   event.preventDefault();
 
-  // console.log(usernameInput.value);
-  // console.log(emailInput.value);
-  // console.log(passwordInput.value);
-  // console.log(confirmPasswordInput.value);
+  messages = new MessageList();
 
   const checkFields = listReqiuredFields('register');
 
@@ -164,4 +236,31 @@ form.addEventListener('submit', function (event) {
   checkEmail(emailInput);
   checkPasswordRequirements(passwordInput);
   checkPasswordsMatch(passwordInput, confirmPasswordInput);
+
+  showValidationMessages(checkFields);
+
+  // console.log(messages.getMessages());
+  // console.log(messages.getMessages().filter((i) => i.inputField === 'Password').length);
+
+  // var x = messages
+  //   .getMessages()
+  //   .filter((i) => i.inputField === 'Password')
+  //   .sort((a, b) => a.order - b.order);
+  // console.log(x[x.length - 1].message);
+
+  // try {
+  //   const x = Array.from(
+  //     messages
+  //       .getMessages()
+  //       .filter((i) => i.inputField === 'Password')
+  //       .sort((a, b) => a.order - b.order)
+  //   )[0];
+  //   console.log(x.message);
+  // } catch (error) {
+  //   console.log(`Error: ${error}`);
+  // }
+
+  //.forEach((element) => {
+  //console.log(`${element.inputField}: Order ${element.order} says "${element.message}"`);
+  //});
 });
