@@ -7,8 +7,6 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <script src="script.js"></script>
-
     <div class="movie-container">
       <label>Pick a movie:</label>
       <select id="movie">
@@ -38,7 +36,7 @@
       <div class="screen"></div>
 
       <div class="row">
-        <div class="seat"></div>
+        <div class="seat selected"></div>
         <div class="seat"></div>
         <div class="seat occupied"></div>
         <div class="seat"></div>
@@ -78,7 +76,7 @@
         <div class="seat occupied"></div>
       </div>
       <div class="row">
-        <div class="seat"></div>
+        <div class="seat selected"></div>
         <div class="seat"></div>
         <div class="seat"></div>
         <div class="seat"></div>
@@ -100,5 +98,7 @@
     </div>
 
     <p class="text">You have selected <span id="count">0</span> seats for a price of $<span id="total">0</span></p>
+
+    <script src="script.js"></script>
   </body>
 </html>
