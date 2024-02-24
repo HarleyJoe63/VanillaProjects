@@ -10,13 +10,15 @@ console.log('myClassList:', myClassList);
 var classList = Array.from(myClassList).filter((c) => c.className !== 'seat occupied');
 console.log('classList:', classList);
 
-console.log('container:', container);
-console.log('seats:', seats);
-console.log('count:', count);
-console.log('total:', total);
-console.log('movieSelect:', movieSelect);
+// console.log('container:', container);
+// console.log('seats:', seats);
+// console.log('count:', count);
+// console.log('total:', total);
+// console.log('movieSelect:', movieSelect);
 
 populateUI();
+// Initial count and total set
+//updateSelectedCount();
 
 let ticketPrice = +movieSelect.value;
 
@@ -31,6 +33,7 @@ function updateSelectedCount() {
   const selectedSeats = document.querySelectorAll('.row .seat.selected');
 
   const seatsIndex = [...selectedSeats].map((seat) => [...seats].indexOf(seat));
+  console.log('seatsIndex:', seatsIndex);
 
   localStorage.setItem('selectedSeats', JSON.stringify(seatsIndex));
 
@@ -79,5 +82,8 @@ container.addEventListener('click', (e) => {
   }
 });
 
+//populateUI();
 // Initial count and total set
 updateSelectedCount();
+
+//let ticketPrice = +movieSelect.value;
